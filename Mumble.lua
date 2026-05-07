@@ -214,6 +214,9 @@ end
 
 local f = CreateFrame'Frame'
 
+-- Run migration immediately on load, not waiting for chat events
+local _ = EnsurePlayerDB()
+
 for k, v in pairs(events) do
 	f:RegisterEvent(v)
 end
