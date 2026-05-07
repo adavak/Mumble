@@ -9,7 +9,7 @@ local events = {
 }
 
 local function GetPlayerKey()
-	return GetRealmName() .. "#" .. GetLocale()
+	return GetLocale()
 end
 
 local function GetCurrentZoneID()
@@ -44,129 +44,9 @@ end
 local function EnsurePlayerDB()
 	local key = GetPlayerKey()
 	if not CHAT_MSG_LOG_DB then CHAT_MSG_LOG_DB = {} end
-
-	-- ── PlayerKey migration: PlayerName@RealmName#Locale → RealmName#Locale ──
-	if not CHAT_MSG_LOG_DB.__migrated then
-		CHAT_MSG_LOG_DB.__migrated = true
-		local merged = {}
-		for oldKey, playerData in pairs(CHAT_MSG_LOG_DB) do
-			if type(oldKey) == "string" and type(playerData) == "table" then
-				-- Match old format: PlayerName@RealmName#Locale
-				local atPos, hashPos = oldKey:find("@"), oldKey:find("#")
-				if atPos and hashPos and hashPos > atPos then
-					local newKey = oldKey:sub(atPos + 1)
-					if not merged[newKey] then merged[newKey] = {} end
-					-- Merge zones
-					for zoneKey, zoneData in pairs(playerData) do
-						if type(zoneData) == "table" and (zoneData.__timeline or zoneData.__seen) then
-							if not merged[newKey][zoneKey] then
-								merged[newKey][zoneKey] = zoneData
-							else
-								local tgt = merged[newKey][zoneKey]
-								-- Merge __timeline: dedup by message, keep earliest timestamp
-								if zoneData.__timeline then
-									local byMsg = {}
-									-- Index existing entries by message body
-									for _, e in ipairs(tgt.__timeline or {}) do
-										local _, _, time, body = e:find("%[(%d+-%d+-%d+ %d+:%d+:%d+)%](.*)")
-										if body then
-											if not byMsg[body] or time < byMsg[body] then
-												byMsg[body] = time
-											end
-										end
-									end
-									-- Merge from source
-									for _, e in ipairs(zoneData.__timeline) do
-										local _, _, time, body = e:find("%[(%d+-%d+-%d+ %d+:%d+:%d+)%](.*)")
-										if body then
-											if not byMsg[body] or time < byMsg[body] then
-												byMsg[body] = time
-											end
-										end
-									end
-									-- Rebuild timeline sorted by time
-									tgt.__timeline = {}
-									local sorted = {}
-									for body, time in pairs(byMsg) do
-										table.insert(sorted, { time = time, body = body })
-									end
-									table.sort(sorted, function(a, b) return a.time < b.time end)
-									for _, item in ipairs(sorted) do
-										table.insert(tgt.__timeline, "[" .. item.time .. "]" .. item.body)
-									end
-								end
-								-- Merge __seen
-								if zoneData.__seen then
-									for k, _ in pairs(zoneData.__seen) do
-										tgt.__seen[k] = true
-									end
-								end
-								-- Merge NPC entries
-								for npc, events in pairs(zoneData) do
-									if npc ~= "__timeline" and npc ~= "__seen" and type(events) == "table" then
-										if not tgt[npc] then tgt[npc] = {} end
-										for evt, msgs in pairs(events) do
-											if not tgt[npc][evt] then tgt[npc][evt] = {} end
-											local seenMsg = {}
-											for _, m in ipairs(tgt[npc][evt]) do seenMsg[m] = true end
-											for _, m in ipairs(msgs) do
-												if not seenMsg[m] then
-													seenMsg[m] = true
-													table.insert(tgt[npc][evt], m)
-												end
-											end
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-		-- Write merged data and remove old keys
-		for newKey, zoneData in pairs(merged) do
-			if not CHAT_MSG_LOG_DB[newKey] then CHAT_MSG_LOG_DB[newKey] = {} end
-			for zoneKey, z in pairs(zoneData) do
-				CHAT_MSG_LOG_DB[newKey][zoneKey] = z
-			end
-		end
-		for oldKey, _ in pairs(CHAT_MSG_LOG_DB) do
-			if type(oldKey) == "string" and oldKey:find("@") and oldKey:find("#") then
-				-- Check it's actually PlayerName@Realm#Locale format
-				local atPos, hashPos = oldKey:find("@"), oldKey:find("#")
-				if hashPos > atPos then
-					CHAT_MSG_LOG_DB[oldKey] = nil
-				end
-			end
-		end
-	end
-
 	if not CHAT_MSG_LOG_DB[key] then
 		CHAT_MSG_LOG_DB[key] = {}
 	end
-
-	-- ── Zone key migration: numeric → ID@Name ──
-	local migrateList = {}
-	for k, v in pairs(CHAT_MSG_LOG_DB[key]) do
-		if type(k) == "number" and type(v) == "table" then
-			local name = v.__mapName
-			if not name then
-				local mapInfo = C_Map.GetMapInfo(k)
-				name = mapInfo and mapInfo.name or "Map" .. k
-			end
-			local newKey = ZoneKeyByID(k, name)
-			if newKey ~= k then
-				v.__mapName = nil
-				migrateList[k] = { newKey = newKey, data = v }
-			end
-		end
-	end
-	for oldKey, info in pairs(migrateList) do
-		CHAT_MSG_LOG_DB[key][info.newKey] = info.data
-		CHAT_MSG_LOG_DB[key][oldKey] = nil
-	end
-
 	return key
 end
 
@@ -212,10 +92,19 @@ local function FormatDisplay(t, who, event, msg)
 	return "[" .. t .. "][" .. who .. "][" .. tag .. "]：" .. msg
 end
 
-local f = CreateFrame'Frame'
+-- Slash command
+SLASH_MUMBLE1 = "/mumble"
+SlashCmdList["MUMBLE"] = function(input)
+	input = input:trim()
+	if input == "reset" then
+		CHAT_MSG_LOG_DB = {}
+		print("Mumble: cache reset.")
+	else
+		print("Mumble: unknown command. Usage: /mumble reset")
+	end
+end
 
--- Run migration immediately on load, not waiting for chat events
-local _ = EnsurePlayerDB()
+local f = CreateFrame'Frame'
 
 for k, v in pairs(events) do
 	f:RegisterEvent(v)

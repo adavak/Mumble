@@ -2,7 +2,7 @@
 
 NPC dialogue logger for World of Warcraft.
 
-Silently captures monster and boss chat messages and organizes transcripts by player, realm, locale, and zone. No UI, no configuration — just install and forget.
+Silently captures monster and boss chat messages and organizes transcripts by locale and zone. No UI, no configuration — just install and forget.
 
 ## Files
 
@@ -24,7 +24,7 @@ Mumble/
 All records stored in SavedVariables under `CHAT_MSG_LOG_DB`:
 
 ```
-CHAT_MSG_LOG_DB[PlayerKey][ZoneKey] = {
+CHAT_MSG_LOG_DB[Locale][ZoneKey] = {
   __timeline = { "[timestamp][speaker][tag]message", ... },  -- ordered transcript
   __seen     = { dedup_key → true },                         -- deduplication
   [SpeakerName] = {
@@ -33,5 +33,5 @@ CHAT_MSG_LOG_DB[PlayerKey][ZoneKey] = {
 }
 ```
 
-- **PlayerKey**: `RealmName#Locale`
+- **Locale**: game locale (e.g. `zhCN`, `enUS`, `zhTW`)
 - **ZoneKey**: `MapID@MapName`
