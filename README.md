@@ -6,6 +6,14 @@ Silently captures monster and boss chat messages and organizes transcripts by lo
 
 [CurseForge](https://www.curseforge.com/wow/addons/mumble)
 
+## Storage
+
+Data saved to `WTF/Account/<AccountID>/SavedVariables/Mumble.lua`.
+
+## Usage
+
+Type `/mumble reset` in-game to clear all cached logs.
+
 ## Files
 
 ```
