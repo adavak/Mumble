@@ -9,7 +9,7 @@ local events = {
 }
 
 local function GetPlayerKey()
-	return UnitName("player") .. "@" .. GetRealmName() .. "#" .. GetLocale()
+	return GetRealmName() .. "#" .. GetLocale()
 end
 
 local function GetCurrentZoneID()

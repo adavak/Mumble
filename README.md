@@ -33,5 +33,5 @@ CHAT_MSG_LOG_DB[PlayerKey][ZoneKey] = {
 }
 ```
 
-- **PlayerKey**: `PlayerName@RealmName#Locale`
+- **PlayerKey**: `RealmName#Locale`
 - **ZoneKey**: `MapID@MapName`
