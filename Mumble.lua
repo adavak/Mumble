@@ -63,15 +63,36 @@ local function EnsurePlayerDB()
 								merged[newKey][zoneKey] = zoneData
 							else
 								local tgt = merged[newKey][zoneKey]
-								-- Merge __timeline (append unique, sort later)
+								-- Merge __timeline: dedup by message, keep earliest timestamp
 								if zoneData.__timeline then
-									local seen = {}
-									for _, e in ipairs(tgt.__timeline or {}) do seen[e] = true end
-									for _, e in ipairs(zoneData.__timeline) do
-										if not seen[e] then
-											seen[e] = true
-											table.insert(tgt.__timeline, e)
+									local byMsg = {}
+									-- Index existing entries by message body
+									for _, e in ipairs(tgt.__timeline or {}) do
+										local _, _, time, body = e:find("%[(%d+-%d+-%d+ %d+:%d+:%d+)%](.*)")
+										if body then
+											if not byMsg[body] or time < byMsg[body] then
+												byMsg[body] = time
+											end
 										end
+									end
+									-- Merge from source
+									for _, e in ipairs(zoneData.__timeline) do
+										local _, _, time, body = e:find("%[(%d+-%d+-%d+ %d+:%d+:%d+)%](.*)")
+										if body then
+											if not byMsg[body] or time < byMsg[body] then
+												byMsg[body] = time
+											end
+										end
+									end
+									-- Rebuild timeline sorted by time
+									tgt.__timeline = {}
+									local sorted = {}
+									for body, time in pairs(byMsg) do
+										table.insert(sorted, { time = time, body = body })
+									end
+									table.sort(sorted, function(a, b) return a.time < b.time end)
+									for _, item in ipairs(sorted) do
+										table.insert(tgt.__timeline, "[" .. item.time .. "]" .. item.body)
 									end
 								end
 								-- Merge __seen
