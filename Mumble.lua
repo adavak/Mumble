@@ -44,10 +44,88 @@ end
 local function EnsurePlayerDB()
 	local key = GetPlayerKey()
 	if not CHAT_MSG_LOG_DB then CHAT_MSG_LOG_DB = {} end
+
+	-- ── PlayerKey migration: PlayerName@RealmName#Locale → RealmName#Locale ──
+	if not CHAT_MSG_LOG_DB.__migrated then
+		CHAT_MSG_LOG_DB.__migrated = true
+		local merged = {}
+		for oldKey, playerData in pairs(CHAT_MSG_LOG_DB) do
+			if type(oldKey) == "string" and type(playerData) == "table" then
+				-- Match old format: PlayerName@RealmName#Locale
+				local atPos, hashPos = oldKey:find("@"), oldKey:find("#")
+				if atPos and hashPos and hashPos > atPos then
+					local newKey = oldKey:sub(atPos + 1)
+					if not merged[newKey] then merged[newKey] = {} end
+					-- Merge zones
+					for zoneKey, zoneData in pairs(playerData) do
+						if type(zoneData) == "table" and (zoneData.__timeline or zoneData.__seen) then
+							if not merged[newKey][zoneKey] then
+								merged[newKey][zoneKey] = zoneData
+							else
+								local tgt = merged[newKey][zoneKey]
+								-- Merge __timeline (append unique, sort later)
+								if zoneData.__timeline then
+									local seen = {}
+									for _, e in ipairs(tgt.__timeline or {}) do seen[e] = true end
+									for _, e in ipairs(zoneData.__timeline) do
+										if not seen[e] then
+											seen[e] = true
+											table.insert(tgt.__timeline, e)
+										end
+									end
+								end
+								-- Merge __seen
+								if zoneData.__seen then
+									for k, _ in pairs(zoneData.__seen) do
+										tgt.__seen[k] = true
+									end
+								end
+								-- Merge NPC entries
+								for npc, events in pairs(zoneData) do
+									if npc ~= "__timeline" and npc ~= "__seen" and type(events) == "table" then
+										if not tgt[npc] then tgt[npc] = {} end
+										for evt, msgs in pairs(events) do
+											if not tgt[npc][evt] then tgt[npc][evt] = {} end
+											local seenMsg = {}
+											for _, m in ipairs(tgt[npc][evt]) do seenMsg[m] = true end
+											for _, m in ipairs(msgs) do
+												if not seenMsg[m] then
+													seenMsg[m] = true
+													table.insert(tgt[npc][evt], m)
+												end
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+		-- Write merged data and remove old keys
+		for newKey, zoneData in pairs(merged) do
+			if not CHAT_MSG_LOG_DB[newKey] then CHAT_MSG_LOG_DB[newKey] = {} end
+			for zoneKey, z in pairs(zoneData) do
+				CHAT_MSG_LOG_DB[newKey][zoneKey] = z
+			end
+		end
+		for oldKey, _ in pairs(CHAT_MSG_LOG_DB) do
+			if type(oldKey) == "string" and oldKey:find("@") and oldKey:find("#") then
+				-- Check it's actually PlayerName@Realm#Locale format
+				local atPos, hashPos = oldKey:find("@"), oldKey:find("#")
+				if hashPos > atPos then
+					CHAT_MSG_LOG_DB[oldKey] = nil
+				end
+			end
+		end
+	end
+
 	if not CHAT_MSG_LOG_DB[key] then
 		CHAT_MSG_LOG_DB[key] = {}
 	end
 
+	-- ── Zone key migration: numeric → ID@Name ──
 	local migrateList = {}
 	for k, v in pairs(CHAT_MSG_LOG_DB[key]) do
 		if type(k) == "number" and type(v) == "table" then
