@@ -4,6 +4,8 @@ NPC dialogue logger for World of Warcraft.
 
 Silently captures monster and boss chat messages and organizes transcripts by locale and zone. No UI, no configuration — just install and forget.
 
+[CurseForge](https://www.curseforge.com/wow/addons/mumble)
+
 ## Files
 
 ```
