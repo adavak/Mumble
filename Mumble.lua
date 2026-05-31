@@ -20,10 +20,10 @@ local function GetCurrentZoneID()
 		return mapID, mapName
 	end
 
-	local _, _, _, _, _, _, _, instanceMapID = GetInstanceInfo()
+	local name, _, _, _, _, _, _, instanceMapID = GetInstanceInfo()
 	if instanceMapID and instanceMapID > 0 then
 		local mapInfo = C_Map.GetMapInfo(instanceMapID)
-		local mapName = mapInfo and mapInfo.name or "Instance" .. instanceMapID
+		local mapName = mapInfo and mapInfo.name or name or "Instance" .. instanceMapID
 		return instanceMapID, mapName
 	end
 
