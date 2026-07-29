@@ -34,22 +34,27 @@ local function GetZoneNPCs(zoneKey)
     return list
 end
 
--- Chat color by raw event name (mapped to localized tags via Mumble.eventTag)
+-- Chat color from game settings (ChatTypeInfo)
 
-local eventColors = {
-    CHAT_MSG_MONSTER_SAY = "FFFF9F",
-    CHAT_MSG_MONSTER_YELL = "FF4040",
-    CHAT_MSG_MONSTER_WHISPER = "FFB5EB",
-    CHAT_MSG_MONSTER_EMOTE = "FF8040",
-    CHAT_MSG_MONSTER_PARTY = "AAAFFF",
-    CHAT_MSG_RAID_BOSS_EMOTE = "FFDD00",
-    CHAT_MSG_RAID_BOSS_WHISPER = "FFDD00",
+local chatTypeID = {
+    CHAT_MSG_MONSTER_SAY = 41,
+    CHAT_MSG_MONSTER_YELL = 42,
+    CHAT_MSG_MONSTER_WHISPER = 43,
+    CHAT_MSG_MONSTER_EMOTE = 44,
+    CHAT_MSG_MONSTER_PARTY = 45,
+    CHAT_MSG_RAID_BOSS_EMOTE = 46,
+    CHAT_MSG_RAID_BOSS_WHISPER = 47,
 }
 local tagColors = {}
 if Mumble.eventTag then
     for event, tag in pairs(Mumble.eventTag) do
-        local color = eventColors[event]
-        if color then tagColors[tag] = color end
+        local id = chatTypeID[event]
+        if id then
+            local info = ChatTypeInfo and ChatTypeInfo[id]
+            if info then
+                tagColors[tag] = string.format("%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255)
+            end
+        end
     end
 end
 
