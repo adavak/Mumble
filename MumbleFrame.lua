@@ -34,32 +34,16 @@ local function GetZoneNPCs(zoneKey)
     return list
 end
 
--- Chat color from game settings (ChatTypeInfo)
-
--- Chat colors: try ChatTypeInfo first, fall back to defaults
-
-local defaultColors = {
-    CHAT_MSG_MONSTER_SAY = "FFFF9F",
-    CHAT_MSG_MONSTER_YELL = "FF4040",
-    CHAT_MSG_MONSTER_WHISPER = "FFB5EB",
-    CHAT_MSG_MONSTER_EMOTE = "FF8040",
-    CHAT_MSG_MONSTER_PARTY = "AAAFFF",
-    CHAT_MSG_RAID_BOSS_EMOTE = "FFDD00",
-    CHAT_MSG_RAID_BOSS_WHISPER = "FFDD00",
+-- Chat colors by localized event tag
+local tagColors = {
+    ["Say"] = "FFFF9F", ["说"] = "FFFF9F", ["說"] = "FFFF9F",
+    ["Yell"] = "FF4040", ["大喊"] = "FF4040",
+    ["Whisper"] = "FFB5EB", ["密语"] = "FFB5EB", ["密語"] = "FFB5EB",
+    ["Emote"] = "FF8040", ["表情"] = "FF8040",
+    ["Party"] = "AAAFFF", ["队伍"] = "AAAFFF", ["隊伍"] = "AAAFFF",
+    ["BossEmote"] = "FFDD00", ["首领表情"] = "FFDD00", ["首領表情"] = "FFDD00",
+    ["BossWhisper"] = "FFDD00", ["首领密语"] = "FFDD00", ["首領密語"] = "FFDD00",
 }
-
-local tagColors = {}
-if Mumble.eventTag then
-    for event, tag in pairs(Mumble.eventTag) do
-        local name = event:gsub("^CHAT_MSG_", "")
-        local info = ChatTypeInfo and ChatTypeInfo[name]
-        if info then
-            tagColors[tag] = string.format("%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255)
-        else
-            tagColors[tag] = defaultColors[event] or "FFFFFF"
-        end
-    end
-end
 
 -- Zone name grouping
 
