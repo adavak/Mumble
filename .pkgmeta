@@ -16,8 +16,6 @@ ignore:
   - .gitignore
   - .gitattributes
   - .pkgmeta
-  - memory/
-  - screenshots/
 
 required-dependencies:
   - Ace3
