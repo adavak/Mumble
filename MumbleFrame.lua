@@ -36,18 +36,15 @@ end
 
 -- Chat color from game settings (ChatTypeInfo)
 
--- Build tag → color from ChatTypeInfo via global type constants
--- (e.g. CHAT_TYPE_MONSTER_SAY = 41)
+-- Read chat colors from ChatTypeInfo (indexed by type name)
+-- e.g. ChatTypeInfo["MONSTER_SAY"].r/g/b
 local tagColors = {}
 if Mumble.eventTag then
     for event, tag in pairs(Mumble.eventTag) do
-        local typeName = event:gsub("CHAT_MSG_", "CHAT_TYPE_")
-        local id = _G[typeName]
-        if id then
-            local info = ChatTypeInfo and ChatTypeInfo[id]
-            if info then
-                tagColors[tag] = string.format("%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255)
-            end
+        local name = event:gsub("^CHAT_MSG_", "")
+        local info = ChatTypeInfo and ChatTypeInfo[name]
+        if info then
+            tagColors[tag] = string.format("%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255)
         end
     end
 end
