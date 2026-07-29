@@ -9,54 +9,16 @@ function Mumble.GetPlayerKey()
 	return GetLocale()
 end
 
-function Mumble.GetAllKnownNPCs()
-	local seen = {}
-	local pk = Mumble.GetPlayerKey()
-	local db = CHAT_MSG_LOG_DB and CHAT_MSG_LOG_DB[pk]
-	if not db then return {} end
-	for zk, zoneDB in pairs(db) do
-		if zk ~= "__config" then
-			for who in pairs(zoneDB) do
-				if who ~= "__timeline" and who ~= "__seen" then
-					seen[who] = true
-				end
-			end
-		end
-	end
-	local list = {}
-	for name in pairs(seen) do tinsert(list, name) end
-	sort(list)
-	return list
-end
-
-function Mumble.InitConfig()
-	Mumble.GetConfig() -- ensure initialized
-end
-
 function Mumble.GetConfig()
 	if not CHAT_MSG_LOG_DB then
 		CHAT_MSG_LOG_DB = {}
 	end
 	if not CHAT_MSG_LOG_DB.__config then
-		CHAT_MSG_LOG_DB.__config = { npcFilter = {}, hideTimestamp = false }
-	end
-	-- lazily add hideTimestamp if config existed before this field
-	if CHAT_MSG_LOG_DB.__config.hideTimestamp == nil then
+		CHAT_MSG_LOG_DB.__config = { hideTimestamp = false }
+	elseif CHAT_MSG_LOG_DB.__config.hideTimestamp == nil then
 		CHAT_MSG_LOG_DB.__config.hideTimestamp = false
 	end
 	return CHAT_MSG_LOG_DB.__config
-end
-
-function Mumble.ShouldRecord(who)
-	if not who then return true end
-	local filter = Mumble.GetConfig().npcFilter
-	if not filter or #filter == 0 then
-		return true -- empty filter = record all
-	end
-	for _, name in ipairs(filter) do
-		if name == who then return true end
-	end
-	return false
 end
 
 -- Get the zone key for the player's current location
@@ -240,7 +202,7 @@ end
 
 -- ── Init config on load ──────────────────────────────────────────────────────
 
-Mumble.InitConfig()
+Mumble.GetConfig()
 Mumble.MergeDuplicateZones()
 
 -- ── Slash command ────────────────────────────────────────────────────────────
@@ -286,9 +248,6 @@ f:SetScript("OnEvent", function(self, event, msg, who, ...)
 
 	if issecretvalue(msg) then return end
 	if who and issecretvalue(who) then return end
-
-	-- NPC filter check
-	if not Mumble.ShouldRecord(who) then return end
 
 	local playerKey = EnsurePlayerDB()
 	local mapID, mapName = GetCurrentZoneID()
