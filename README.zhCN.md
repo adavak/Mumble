@@ -42,10 +42,6 @@ Mumble/
 │   └── zhCN.lua        # 简体中文
 ```
 
-## 依赖
-
-- **Ace3**（nolib 版本需自行安装；with-lib 版本已内嵌）
-
 ## 数据存储
 
 保存在 `WTF/Account/\<账号ID\>/SavedVariables/Mumble.lua`。

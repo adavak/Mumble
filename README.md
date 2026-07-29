@@ -42,10 +42,6 @@ Mumble/
 │   └── zhCN.lua        # Simplified Chinese
 ```
 
-## Dependencies
-
-- **Ace3** (required for nolib variant; bundled in with-lib variant)
-
 ## Storage
 
 Data saved to `WTF/Account/\<AccountID\>/SavedVariables/Mumble.lua`.
