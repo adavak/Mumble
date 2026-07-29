@@ -13,6 +13,7 @@ externals:
 
 ignore:
   - README.md
+  - README.zhCN.md
   - .gitignore
   - .gitattributes
   - .pkgmeta
