@@ -298,6 +298,12 @@ function Mumble.OpenGUI()
     zoneLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -44)
     zoneLabel:SetText(L['zone_label'])
 
+    local function UpdateClearBtn()
+        if clearBtn then
+            clearBtn:SetText(MumbleFrame.selectedNPC and L['clear_npc'] or L['clear_current'])
+        end
+    end
+
     local function OnZoneChanged(name)
         if not name then return end
         local ref = MumbleFrame and MumbleFrame._groupRef
@@ -309,6 +315,7 @@ function Mumble.OpenGUI()
         MumbleFrame.selectedNPC = nil
         RefreshNPCDropdown()
         RefreshTimeline()
+        UpdateClearBtn()
     end
 
     local zoneDD = AceGUI:Create("Dropdown")
@@ -339,6 +346,7 @@ function Mumble.OpenGUI()
         else
             MumbleFrame.selectedNPC = value
         end
+        UpdateClearBtn()
         RefreshTimeline()
     end)
     frame.npcDD = npcDD
@@ -477,4 +485,5 @@ function Mumble.OpenGUI()
         local dd = frame.zoneDD
         if dd then OnZoneChanged(dd:GetValue()) end
     end
+    UpdateClearBtn()
 end

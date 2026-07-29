@@ -12,6 +12,7 @@ if GetLocale() == 'zhCN' then
 	L['hide_timestamp'] = '隐藏时间戳'
 	L['copy_all'] = '复制全部'
 	L['clear_current'] = '清除当前'
+	L['clear_npc'] = '清除NPC'
 	L['close'] = '关闭'
 	L['select_zone'] = '请选择一个区域。'
 	L['no_records'] = '（该区域暂无对话记录）'
