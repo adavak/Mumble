@@ -415,19 +415,47 @@ function Mumble.OpenGUI()
     clearBtn:SetText(L['clear_current'])
     clearBtn:SetScript("OnClick", function()
         local zk = MumbleFrame.selectedZoneKey
+        local npc = MumbleFrame.selectedNPC
         if not zk then return end
         local zd = CHAT_MSG_LOG_DB[playerKey] and CHAT_MSG_LOG_DB[playerKey][zk]
         if not zd then return end
 
+        local isZone = (npc == nil)
         StaticPopupDialogs["MUMBLE_CLEAR_ZONE"] = {
-            text = L['clear_confirm']:format(zk),
+            text = isZone and L['clear_confirm']:format(zk) or string.format(L['clear_npc_confirm'], npc, zk),
             button1 = L['confirm_button'],
             button2 = L['cancel_button'],
             OnAccept = function()
-                zd.__timeline = {}
-                zd.__seen = {}
+                if isZone then
+                    for _, zk2 in ipairs(GetSelZoneKeys()) do
+                        local d = CHAT_MSG_LOG_DB[playerKey] and CHAT_MSG_LOG_DB[playerKey][zk2]
+                        if d then
+                            d.__timeline = {}
+                            d.__seen = {}
+                        end
+                    end
+                else
+                    -- Remove matching entries from timeline and seen
+                    local newTimeline = {}
+                    local newSeen = {}
+                    for _, line in ipairs(zd.__timeline) do
+                        local _, _, who = line:find("%[.-%]%[([^%]]+)")
+                        if who ~= npc then
+                            tinsert(newTimeline, line)
+                        end
+                    end
+                    for dedup in pairs(zd.__seen or {}) do
+                        if not dedup:find("^" .. npc .. ":") then
+                            newSeen[dedup] = true
+                        end
+                    end
+                    zd.__timeline = newTimeline
+                    zd.__seen = newSeen
+                    -- Also remove NPC entry
+                    zd[npc] = nil
+                end
                 RefreshTimeline()
-                print(L['clear_done']:format(zk))
+                print(isZone and L['clear_done']:format(zk) or L['clear_npc_done']:format(npc))
             end,
             timeout = 0,
             hideOnEscape = true,
