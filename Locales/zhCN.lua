@@ -34,13 +34,3 @@ if GetLocale() == 'zhCN' then
 	L['CHAT_MSG_RAID_BOSS_WHISPER'] = '首领密语'
 	L['divider'] = '------------------- %s -------------------'
 end
-
--- Cross-locale entries (unconditional)
-MUMBLE_CHAT_TAGS = MUMBLE_CHAT_TAGS or {}
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_SAY'] = '说'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_YELL'] = '大喊'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_WHISPER'] = '密语'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_EMOTE'] = '表情'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_PARTY'] = '队伍'
-MUMBLE_CHAT_TAGS['CHAT_MSG_RAID_BOSS_EMOTE'] = '首领表情'
-MUMBLE_CHAT_TAGS['CHAT_MSG_RAID_BOSS_WHISPER'] = '首领密语'
