@@ -34,16 +34,38 @@ local function GetZoneNPCs(zoneKey)
     return list
 end
 
--- Chat colors by event tags (enUS / zhCN / zhTW)
-local tagColors = {
-    ["Say"] = "FFFF9F", ["说"] = "FFFF9F", ["說"] = "FFFF9F",
-    ["Yell"] = "FF4040", ["大喊"] = "FF4040",
-    ["Whisper"] = "FFB5EB", ["密语"] = "FFB5EB", ["密語"] = "FFB5EB",
-    ["Emote"] = "FF8040", ["表情"] = "FF8040",
-    ["Party"] = "AAAFFF", ["队伍"] = "AAAFFF", ["隊伍"] = "AAAFFF",
-    ["BossEmote"] = "FFDD00", ["首领表情"] = "FFDD00", ["首領表情"] = "FFDD00",
-    ["BossWhisper"] = "FFDD00", ["首领密语"] = "FFDD00", ["首領密語"] = "FFDD00",
+-- Chat colors by raw event name; lookup via Mumble.eventTag for any locale
+local eventColors = {
+    CHAT_MSG_MONSTER_SAY = "FFFF9F",
+    CHAT_MSG_MONSTER_YELL = "FF4040",
+    CHAT_MSG_MONSTER_WHISPER = "FFB5EB",
+    CHAT_MSG_MONSTER_EMOTE = "FF8040",
+    CHAT_MSG_MONSTER_PARTY = "AAAFFF",
+    CHAT_MSG_RAID_BOSS_EMOTE = "FFDD00",
+    CHAT_MSG_RAID_BOSS_WHISPER = "FFDD00",
 }
+
+-- Build tag → color for current locale; cross-locale fallback in GetTagColor
+local tagColors = {}
+if Mumble.eventTag then
+    for event, tag in pairs(Mumble.eventTag) do
+        local color = eventColors[event]
+        if color then tagColors[tag] = color end
+    end
+end
+
+local function GetTagColor(tag)
+    local c = tagColors[tag]
+    if c then return c end
+    -- Cross-locale fallback: search Mumble.eventTag for matching color
+    for event, t in pairs(Mumble.eventTag or {}) do
+        if t == tag then
+            local ec = eventColors[event]
+            if ec then return ec end
+        end
+    end
+    return "FFFFFF"
+end
 
 -- Zone name grouping
 
@@ -128,14 +150,14 @@ local function RefreshTimeline()
                     if hideTS then
                         display = display:gsub("^%[%d+-%d+-%d+ %d+:%d+:%d+%]", "")
                         local _, _, tag = display:find("%[.-%]%[([^%]]+)")
-                        local color = tagColors[tag] or "FFFFFF"
+                        local color = GetTagColor(tag)
                         tinsert(keyLines, "|cFF" .. color .. display .. "|r")
                     else
                         local tsEnd = display:find("%]")
                         local ts = tsEnd and display:sub(1, tsEnd) or ""
                         local rest = tsEnd and display:sub(tsEnd + 1) or display
                         local _, _, tag = rest:find("%[.-%]%[([^%]]+)")
-                        local color = tagColors[tag] or "FFFFFF"
+                        local color = GetTagColor(tag)
                         tinsert(keyLines, "|cFFAAAAAA" .. ts .. "|r|cFF" .. color .. rest .. "|r")
                     end
                 end
