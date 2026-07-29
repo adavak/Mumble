@@ -5,4 +5,5 @@
 ## Version: @project-version@
 ## IconTexture: 134332
 ## SavedVariables: CHAT_MSG_LOG_DB
+
 Mumble.xml
