@@ -19,7 +19,7 @@ Silently captures monster and boss chat messages and organizes transcripts by zo
 - **NPC filter** — view transcripts for a single NPC
 - **Zone divider** — group headers when multiple map IDs are merged
 - **Localization** — zhCN, enUS
-- **CurseForge ready** — `.pkgmeta` for automated packaging
+- **CurseForge ready** — `.pkgmeta` included
 
 ## Usage
 
