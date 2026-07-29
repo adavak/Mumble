@@ -89,7 +89,7 @@ local function RefreshTimeline()
 
 	local zoneKeys = MumbleFrame and MumbleFrame._selZoneKeys
 	if not zoneKeys or #zoneKeys == 0 then
-		text:SetText(L.SelectZone)
+		text:SetText(L['select_zone'])
 		return
 	end
 
@@ -144,7 +144,7 @@ local function RefreshTimeline()
 		if #keyLines > 0 then
 			if showDivider and isNewID then
 				local displayKey = bestKeyForID[id] or zk
-				tinsert(lines, ("|cFF888888" .. L.Divider .. "|r"):format(displayKey))
+				tinsert(lines, ("|cFF888888" .. L['divider'] .. "|r"):format(displayKey))
 			end
 			for _, colored in ipairs(keyLines) do
 				tinsert(lines, colored)
@@ -152,7 +152,7 @@ local function RefreshTimeline()
 		end
 	end
 
-	local content = #lines > 0 and table.concat(lines, "\n") or L.NoRecords
+	local content = #lines > 0 and table.concat(lines, "\n") or L['no_records']
 	text:SetText(content)
 
 	local ts = MumbleFrame and MumbleFrame.textScroll
@@ -163,7 +163,7 @@ local function RefreshTimeline()
 	end
 end
 
--- ── Refresh AceGUI zone dropdown ─────────────────────────────────────────────
+-- ── Refresh zone dropdown ────────────────────────────────────────────────────
 
 local function RefreshZoneDropdown()
 	local dd = MumbleFrame and MumbleFrame.zoneDD
@@ -176,7 +176,7 @@ local function RefreshZoneDropdown()
 		local id = g.keys[1]:match("^(%d+)@")
 		local label
 		if #g.keys > 1 then
-			label = (id or "") .. "@" .. g.label .. L.GroupSuffix
+			label = (id or "") .. "@" .. g.label .. L['group_suffix']
 		else
 			label = g.keys[1]
 		end
@@ -210,7 +210,7 @@ local function RefreshZoneDropdown()
 	dd:SetValue(defaultLabel)
 end
 
--- ── Refresh AceGUI NPC dropdown ──────────────────────────────────────────────
+-- ── Refresh NPC dropdown ─────────────────────────────────────────────────────
 
 local function RefreshNPCDropdown()
 	local dd = MumbleFrame and MumbleFrame.npcDD
@@ -226,14 +226,14 @@ local function RefreshNPCDropdown()
 	for name in pairs(allNPCs) do tinsert(npcs, name) end
 	sort(npcs)
 
-	local list = { [L.AllNPC] = L.AllNPC }
+	local list = { [L['all_npc']] = L['all_npc'] }
 	for _, name in ipairs(npcs) do list[name] = name end
 	dd:SetList(list)
 	if MumbleFrame.selectedNPC and list[MumbleFrame.selectedNPC] then
 		dd:SetValue(MumbleFrame.selectedNPC)
 	else
 		MumbleFrame.selectedNPC = nil
-		dd:SetValue(L.AllNPC)
+		dd:SetValue(L['all_npc'])
 	end
 end
 
@@ -274,21 +274,21 @@ function Mumble.OpenGUI()
 	frame.selectedZoneKey = nil
 	frame.selectedNPC = nil
 
-	-- ── Title ──
+	-- Title
 	local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 	title:SetPoint("TOP", frame, "TOP", 0, -14)
-	title:SetText(L.Title)
+	title:SetText(L['title'])
 	title:SetTextColor(1, 0.82, 0)
 
-	-- ── Close button ──
+	-- Close button
 	local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 	close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -6)
 	close:SetScript("OnClick", function() frame:Hide() end)
 
-	-- ── Zone dropdown (AceGUI) ──
+	-- Zone dropdown (AceGUI)
 	local zoneLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	zoneLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -44)
-	zoneLabel:SetText(L.ZoneLabel)
+	zoneLabel:SetText(L['zone_label'])
 
 	local function OnZoneChanged(name)
 		if not name then return end
@@ -315,10 +315,10 @@ function Mumble.OpenGUI()
 	frame.zoneDD = zoneDD
 	frame.OnZoneChanged = OnZoneChanged
 
-	-- ── NPC dropdown (AceGUI) ──
+	-- NPC dropdown (AceGUI)
 	local npcLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	npcLabel:SetPoint("TOPLEFT", zoneLabel, "TOPRIGHT", 316, 0)
-	npcLabel:SetText(L.NPCLabel)
+	npcLabel:SetText(L['npc_label'])
 
 	local npcDD = AceGUI:Create("Dropdown")
 	npcDD:SetWidth(150)
@@ -326,7 +326,7 @@ function Mumble.OpenGUI()
 	npcDD.frame:ClearAllPoints()
 	npcDD.frame:SetPoint("TOPLEFT", npcLabel, "TOPRIGHT", 4, 1)
 	npcDD:SetCallback("OnValueChanged", function(widget, event, value)
-		if value == L.AllNPC then
+		if value == L['all_npc'] then
 			MumbleFrame.selectedNPC = nil
 		else
 			MumbleFrame.selectedNPC = value
@@ -335,7 +335,7 @@ function Mumble.OpenGUI()
 	end)
 	frame.npcDD = npcDD
 
-	-- ── Text display area ──
+	-- Text display area
 	local textBg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
 	textBg:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -90)
 	textBg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -22, 70)
@@ -373,7 +373,7 @@ function Mumble.OpenGUI()
 		end
 	end)
 
-	-- ── Bottom buttons ──
+	-- Bottom buttons
 	local btnY = 12
 
 	local hideCB = CreateFrame("CheckButton", nil, frame, "UICheckButtonTemplate")
@@ -382,7 +382,7 @@ function Mumble.OpenGUI()
 	hideCB:SetChecked(Mumble.GetConfig().hideTimestamp)
 	hideCB.text = hideCB:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	hideCB.text:SetPoint("LEFT", hideCB, "RIGHT", 2, 0)
-	hideCB.text:SetText(L.HideTimestamp)
+	hideCB.text:SetText(L['hide_timestamp'])
 	hideCB:SetScript("OnClick", function(self)
 		Mumble.GetConfig().hideTimestamp = self:GetChecked()
 		RefreshTimeline()
@@ -391,20 +391,20 @@ function Mumble.OpenGUI()
 	local copyBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 	copyBtn:SetSize(90, 24)
 	copyBtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 22, btnY)
-	copyBtn:SetText(L.CopyAll)
+	copyBtn:SetText(L['copy_all'])
 	copyBtn:SetScript("OnClick", function()
 		local text = scrollText:GetText()
 		if text and text ~= "" then
 			scrollText:HighlightText()
 			scrollText:SetFocus()
-			print(L.Copied)
+			print(L['copied'])
 		end
 	end)
 
 	local clearBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 	clearBtn:SetSize(90, 24)
 	clearBtn:SetPoint("BOTTOMLEFT", copyBtn, "BOTTOMRIGHT", 6, 0)
-	clearBtn:SetText(L.ClearCurrent)
+	clearBtn:SetText(L['clear_current'])
 	clearBtn:SetScript("OnClick", function()
 		local zk = MumbleFrame.selectedZoneKey
 		if not zk then return end
@@ -412,14 +412,14 @@ function Mumble.OpenGUI()
 		if not zd then return end
 
 		StaticPopupDialogs["MUMBLE_CLEAR_ZONE"] = {
-			text = L.ClearConfirm:format(zk),
-			button1 = L.ConfirmButton,
-			button2 = L.CancelButton,
+			text = L['clear_confirm']:format(zk),
+			button1 = L['confirm_button'],
+			button2 = L['cancel_button'],
 			OnAccept = function()
 				zd.__timeline = {}
 				zd.__seen = {}
 				RefreshTimeline()
-				print(L.ClearDone:format(zk))
+				print(L['clear_done']:format(zk))
 			end,
 			timeout = 0,
 			hideOnEscape = true,
@@ -431,10 +431,10 @@ function Mumble.OpenGUI()
 	local closeBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 	closeBtn:SetSize(60, 24)
 	closeBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -22, btnY)
-	closeBtn:SetText(L.Close)
+	closeBtn:SetText(L['close'])
 	closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
-	-- ── Show and populate ──
+	-- Show and populate
 	frame:Show()
 	RefreshZoneDropdown()
 	if OnZoneChanged then

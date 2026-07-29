@@ -220,38 +220,7 @@ end
 
 -- ── Event tag localization ───────────────────────────────────────────────────
 
-local eventTag
-if GetLocale() == "zhCN" then
-	eventTag = {
-		CHAT_MSG_MONSTER_SAY           = "说",
-		CHAT_MSG_MONSTER_YELL          = "大喊",
-		CHAT_MSG_MONSTER_WHISPER       = "密语",
-		CHAT_MSG_MONSTER_EMOTE         = "表情",
-		CHAT_MSG_MONSTER_PARTY         = "队伍",
-		CHAT_MSG_RAID_BOSS_EMOTE       = "首领表情",
-		CHAT_MSG_RAID_BOSS_WHISPER     = "首领密语",
-	}
-elseif GetLocale() == "zhTW" then
-	eventTag = {
-		CHAT_MSG_MONSTER_SAY           = "說",
-		CHAT_MSG_MONSTER_YELL          = "大喊",
-		CHAT_MSG_MONSTER_WHISPER       = "密語",
-		CHAT_MSG_MONSTER_EMOTE         = "表情",
-		CHAT_MSG_MONSTER_PARTY         = "隊伍",
-		CHAT_MSG_RAID_BOSS_EMOTE       = "首領表情",
-		CHAT_MSG_RAID_BOSS_WHISPER     = "首領密語",
-	}
-else
-	eventTag = {
-		CHAT_MSG_MONSTER_SAY           = "Say",
-		CHAT_MSG_MONSTER_YELL          = "Yell",
-		CHAT_MSG_MONSTER_WHISPER       = "Whisper",
-		CHAT_MSG_MONSTER_EMOTE         = "Emote",
-		CHAT_MSG_MONSTER_PARTY         = "Party",
-		CHAT_MSG_RAID_BOSS_EMOTE       = "BossEmote",
-		CHAT_MSG_RAID_BOSS_WHISPER     = "BossWhisper",
-	}
-end
+local eventTag = MUMBLE_LOCALE or {}
 
 local function FormatDisplay(t, who, event, msg)
 	local tag = eventTag[event] or event
@@ -272,16 +241,16 @@ SlashCmdList["MUMBLE"] = function(input)
 		if Mumble.OpenGUI then
 			Mumble.OpenGUI()
 		else
-			print(MUMBLE_LOCALE.NoGUI)
+			print(MUMBLE_LOCALE['no_gui'])
 		end
 	elseif input == "reset" then
 		StaticPopupDialogs["MUMBLE_RESET_ALL"] = {
-			text = MUMBLE_LOCALE.ResetConfirm,
-			button1 = MUMBLE_LOCALE.ConfirmButton,
-			button2 = MUMBLE_LOCALE.CancelButton,
+			text = MUMBLE_LOCALE['reset_confirm'],
+			button1 = MUMBLE_LOCALE['confirm_button'],
+			button2 = MUMBLE_LOCALE['cancel_button'],
 			OnAccept = function()
 				CHAT_MSG_LOG_DB = {}
-				print(MUMBLE_LOCALE.ResetDone)
+				print(MUMBLE_LOCALE['reset_done'])
 			end,
 			timeout = 0,
 			hideOnEscape = true,
@@ -289,7 +258,7 @@ SlashCmdList["MUMBLE"] = function(input)
 		}
 		StaticPopup_Show("MUMBLE_RESET_ALL")
 	else
-		print(MUMBLE_LOCALE.Usage)
+		print(MUMBLE_LOCALE['usage'])
 	end
 end
 
