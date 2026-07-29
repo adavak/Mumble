@@ -1,6 +1,17 @@
 package-as: Mumble
+
+externals:
+  Libs/AceGUI-3.0:
+    url: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
+    tag: latest
+
 ignore:
   - README.md
   - .gitignore
   - .gitattributes
   - .pkgmeta
+  - memory/
+  - screenshots/
+
+required-dependencies:
+  - Ace3

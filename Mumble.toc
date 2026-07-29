@@ -8,4 +8,5 @@
 ## Dependencies: Ace3
 
 Mumble.lua
+locale/locale.lua
 MumbleFrame.lua

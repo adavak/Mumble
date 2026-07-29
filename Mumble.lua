@@ -85,6 +85,85 @@ function Mumble.GetCurrentZoneKey()
 	return nil
 end
 
+-- ── Data cleanup ──────────────────────────────────────────────────────────────
+-- Merge zone entries with the same map ID on load, to clean up InstanceX duplicates
+
+function Mumble.MergeDuplicateZones()
+	local db = CHAT_MSG_LOG_DB
+	if not db then return end
+
+	-- Collect all zone keys by map ID across all locales
+	for locale, localeDB in pairs(db) do
+		if type(localeDB) == "table" then
+			local byID = {}
+			for zk in pairs(localeDB) do
+				if zk ~= "__config" then
+					local idStr, name = zk:match("^(%d+)@(.+)$")
+					if idStr then
+						local id = tonumber(idStr)
+						if not byID[id] then byID[id] = {} end
+						tinsert(byID[id], zk)
+					end
+				end
+			end
+
+			for id, keys in pairs(byID) do
+				if #keys > 1 then
+					-- Pick the best key (prefer non-Instance name)
+					sort(keys)
+					local best = keys[1]
+					for _, k in ipairs(keys) do
+						if not k:find("Instance") then best = k; break end
+					end
+
+					-- Merge data from other keys into best
+					for _, k in ipairs(keys) do
+						if k ~= best and localeDB[k] then
+							local src = localeDB[k]
+							local dst = localeDB[best]
+
+							-- Merge timeline
+							if src.__timeline and dst.__timeline then
+								for _, line in ipairs(src.__timeline) do
+									tinsert(dst.__timeline, line)
+								end
+							elseif src.__timeline then
+								dst.__timeline = src.__timeline
+							end
+
+							-- Merge seen
+							if src.__seen then
+								for dedup in pairs(src.__seen) do
+									dst.__seen[dedup] = true
+								end
+							end
+
+							-- Merge NPC entries
+							for npc, events in pairs(src) do
+								if npc ~= "__timeline" and npc ~= "__seen" then
+									if not dst[npc] then dst[npc] = {} end
+									for eventType, msgs in pairs(events) do
+										if not dst[npc][eventType] then dst[npc][eventType] = {} end
+										for _, msg in ipairs(msgs) do
+											tinsert(dst[npc][eventType], msg)
+										end
+									end
+								end
+							end
+
+							-- Sort timeline by timestamp prefix
+							sort(dst.__timeline)
+
+							-- Remove the merged key
+							localeDB[k] = nil
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 -- ── Events ───────────────────────────────────────────────────────────────────
 
 local events = {
@@ -182,6 +261,7 @@ end
 -- ── Init config on load ──────────────────────────────────────────────────────
 
 Mumble.InitConfig()
+Mumble.MergeDuplicateZones()
 
 -- ── Slash command ────────────────────────────────────────────────────────────
 
@@ -192,59 +272,24 @@ SlashCmdList["MUMBLE"] = function(input)
 		if Mumble.OpenGUI then
 			Mumble.OpenGUI()
 		else
-			print("Mumble: GUI 模块未加载。")
+			print(MUMBLE_LOCALE.NoGUI)
 		end
 	elseif input == "reset" then
-		CHAT_MSG_LOG_DB = {}
-		print("Mumble: 所有记录已清除。")
-	elseif input == "list" then
-		local filter = Mumble.GetConfig().npcFilter
-		if filter and #filter > 0 then
-			print("Mumble NPC 过滤列表：" .. table.concat(filter, ", "))
-		else
-			print("Mumble: NPC 过滤列表为空（记录所有 NPC）。")
-		end
-	elseif input:sub(1, 7) == "filter " then
-		local cmd = strtrim(input:sub(8))
-		if cmd == "" then
-			local filter = Mumble.GetConfig().npcFilter
-			if filter and #filter > 0 then
-				print("Mumble NPC 过滤列表：" .. table.concat(filter, ", "))
-			else
-				print("Mumble: NPC 过滤列表为空（记录所有 NPC）。")
-			end
-		elseif cmd:sub(1, 4) == "add " then
-			local name = strtrim(cmd:sub(5))
-			if name ~= "" then
-				local filter = Mumble.GetConfig().npcFilter
-				for _, n in ipairs(filter) do
-					if n == name then print("Mumble: '" .. name .. "' 已在列表中。"); return end
-				end
-				tinsert(filter, name)
-				sort(filter)
-				print("Mumble: 已添加 '" .. name .. "' 到过滤列表。")
-			end
-		elseif cmd:sub(1, 7) == "remove " then
-			local name = strtrim(cmd:sub(8))
-			if name ~= "" then
-				local filter = Mumble.GetConfig().npcFilter
-				for i, n in ipairs(filter) do
-					if n == name then
-						tremove(filter, i)
-						print("Mumble: 已从过滤列表移除 '" .. name .. "'。")
-						return
-					end
-				end
-				print("Mumble: 过滤列表中未找到 '" .. name .. "'。")
-			end
-		elseif cmd == "clear" then
-			Mumble.GetConfig().npcFilter = {}
-			print("Mumble: NPC 过滤列表已清空（将记录所有 NPC）。")
-		else
-			print("Mumble: 用法 — /mumble filter add <NPC名>, /mumble filter remove <NPC名>, /mumble filter clear")
-		end
+		StaticPopupDialogs["MUMBLE_RESET_ALL"] = {
+			text = MUMBLE_LOCALE.ResetConfirm,
+			button1 = MUMBLE_LOCALE.ConfirmButton,
+			button2 = MUMBLE_LOCALE.CancelButton,
+			OnAccept = function()
+				CHAT_MSG_LOG_DB = {}
+				print(MUMBLE_LOCALE.ResetDone)
+			end,
+			timeout = 0,
+			hideOnEscape = true,
+		preferredIndex = 3,
+		}
+		StaticPopup_Show("MUMBLE_RESET_ALL")
 	else
-		print("Mumble: 用法 — /mumble（打开界面）, /mumble reset, /mumble list, /mumble filter ...")
+		print(MUMBLE_LOCALE.Usage)
 	end
 end
 
