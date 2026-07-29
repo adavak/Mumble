@@ -46,8 +46,8 @@ local eventColors = {
 }
 
 local tagColors = {}
-if MUMBLE_TAG_TO_EVENT then
-    for tag, event in pairs(MUMBLE_TAG_TO_EVENT) do
+if MUMBLE_CHAT_TAGS then
+    for event, tag in pairs(MUMBLE_CHAT_TAGS) do
         local color = eventColors[event]
         if color then tagColors[tag] = color end
     end
