@@ -1,5 +1,7 @@
 # Mumble 🗣️
 
+[EN](README.md) | [中文](README.zhCN.md)
+
 NPC dialogue logger for World of Warcraft.
 
 Silently captures monster and boss chat messages and organizes transcripts by zone. No configuration needed.
