@@ -5,5 +5,7 @@
 ## Version: @project-version@
 ## IconTexture: 134332
 ## SavedVariables: CHAT_MSG_LOG_DB
+## Dependencies: Ace3
 
 Mumble.lua
+MumbleFrame.lua
