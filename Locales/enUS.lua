@@ -32,3 +32,13 @@ L['party'] = 'Party'
 L['boss_emote'] = 'BossEmote'
 L['boss_whisper'] = 'BossWhisper'
 L['divider'] = '------------------- %s -------------------'
+
+-- Event tag lookup (registered for all locales)
+MUMBLE_TAG_TO_EVENT = MUMBLE_TAG_TO_EVENT or {}
+MUMBLE_TAG_TO_EVENT['Say'] = 'CHAT_MSG_MONSTER_SAY'
+MUMBLE_TAG_TO_EVENT['Yell'] = 'CHAT_MSG_MONSTER_YELL'
+MUMBLE_TAG_TO_EVENT['Whisper'] = 'CHAT_MSG_MONSTER_WHISPER'
+MUMBLE_TAG_TO_EVENT['Emote'] = 'CHAT_MSG_MONSTER_EMOTE'
+MUMBLE_TAG_TO_EVENT['Party'] = 'CHAT_MSG_MONSTER_PARTY'
+MUMBLE_TAG_TO_EVENT['BossEmote'] = 'CHAT_MSG_RAID_BOSS_EMOTE'
+MUMBLE_TAG_TO_EVENT['BossWhisper'] = 'CHAT_MSG_RAID_BOSS_WHISPER'

@@ -2,6 +2,7 @@
     zhCN.lua — Simplified Chinese locale
 ]]
 
+-- GUI strings (only apply in zhCN)
 if GetLocale() == 'zhCN' then
 	local L = {}
 	MUMBLE_LOCALE = L
@@ -34,3 +35,13 @@ if GetLocale() == 'zhCN' then
 	L['boss_whisper'] = '首领密语'
 	L['divider'] = '------------------- %s -------------------'
 end
+
+-- Event tag lookup (registered unconditionally for cross-locale)
+MUMBLE_TAG_TO_EVENT = MUMBLE_TAG_TO_EVENT or {}
+MUMBLE_TAG_TO_EVENT['说'] = 'CHAT_MSG_MONSTER_SAY'
+MUMBLE_TAG_TO_EVENT['大喊'] = 'CHAT_MSG_MONSTER_YELL'
+MUMBLE_TAG_TO_EVENT['密语'] = 'CHAT_MSG_MONSTER_WHISPER'
+MUMBLE_TAG_TO_EVENT['表情'] = 'CHAT_MSG_MONSTER_EMOTE'
+MUMBLE_TAG_TO_EVENT['队伍'] = 'CHAT_MSG_MONSTER_PARTY'
+MUMBLE_TAG_TO_EVENT['首领表情'] = 'CHAT_MSG_RAID_BOSS_EMOTE'
+MUMBLE_TAG_TO_EVENT['首领密语'] = 'CHAT_MSG_RAID_BOSS_WHISPER'

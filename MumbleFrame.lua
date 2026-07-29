@@ -34,35 +34,22 @@ local function GetZoneNPCs(zoneKey)
     return list
 end
 
--- Chat colors by raw event name; all known locale tags pre-mapped
+-- Chat colors by raw event name; mapped from tag→event via MUMBLE_TAG_TO_EVENT
 local eventColors = {
-    CHAT_MSG_MONSTER_SAY = "FFFF9F",
-    CHAT_MSG_MONSTER_YELL = "FF4040",
-    CHAT_MSG_MONSTER_WHISPER = "FFB5EB",
-    CHAT_MSG_MONSTER_EMOTE = "FF8040",
-    CHAT_MSG_MONSTER_PARTY = "AAAFFF",
-    CHAT_MSG_RAID_BOSS_EMOTE = "FFDD00",
-    CHAT_MSG_RAID_BOSS_WHISPER = "FFDD00",
-}
-
--- All known locale tags per event (so cross-locale works)
-local allTags = {
-    CHAT_MSG_MONSTER_SAY = { "Say", "说", "說" },
-    CHAT_MSG_MONSTER_YELL = { "Yell", "大喊" },
-    CHAT_MSG_MONSTER_WHISPER = { "Whisper", "密语", "密語" },
-    CHAT_MSG_MONSTER_EMOTE = { "Emote", "表情" },
-    CHAT_MSG_MONSTER_PARTY = { "Party", "队伍", "隊伍" },
-    CHAT_MSG_RAID_BOSS_EMOTE = { "BossEmote", "首领表情", "首領表情" },
-    CHAT_MSG_RAID_BOSS_WHISPER = { "BossWhisper", "首领密语", "首領密語" },
+    ["CHAT_MSG_MONSTER_SAY"] = "FFFF9F",
+    ["CHAT_MSG_MONSTER_YELL"] = "FF4040",
+    ["CHAT_MSG_MONSTER_WHISPER"] = "FFB5EB",
+    ["CHAT_MSG_MONSTER_EMOTE"] = "FF8040",
+    ["CHAT_MSG_MONSTER_PARTY"] = "AAAFFF",
+    ["CHAT_MSG_RAID_BOSS_EMOTE"] = "FFDD00",
+    ["CHAT_MSG_RAID_BOSS_WHISPER"] = "FFDD00",
 }
 
 local tagColors = {}
-for event, tags in pairs(allTags) do
-    local color = eventColors[event]
-    if color then
-        for _, tag in ipairs(tags) do
-            tagColors[tag] = color
-        end
+if MUMBLE_TAG_TO_EVENT then
+    for tag, event in pairs(MUMBLE_TAG_TO_EVENT) do
+        local color = eventColors[event]
+        if color then tagColors[tag] = color end
     end
 end
 
