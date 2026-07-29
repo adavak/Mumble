@@ -222,13 +222,13 @@ end
 
 local L = MUMBLE_LOCALE
 local eventTag = {
-	CHAT_MSG_MONSTER_SAY           = L and L['say'] or 'Say',
-	CHAT_MSG_MONSTER_YELL          = L and L['yell'] or 'Yell',
-	CHAT_MSG_MONSTER_WHISPER       = L and L['whisper'] or 'Whisper',
-	CHAT_MSG_MONSTER_EMOTE         = L and L['emote'] or 'Emote',
-	CHAT_MSG_MONSTER_PARTY         = L and L['party'] or 'Party',
-	CHAT_MSG_RAID_BOSS_EMOTE       = L and L['boss_emote'] or 'BossEmote',
-	CHAT_MSG_RAID_BOSS_WHISPER     = L and L['boss_whisper'] or 'BossWhisper',
+	CHAT_MSG_MONSTER_SAY           = L and L['CHAT_MSG_MONSTER_SAY'] or 'Say',
+	CHAT_MSG_MONSTER_YELL          = L and L['CHAT_MSG_MONSTER_YELL'] or 'Yell',
+	CHAT_MSG_MONSTER_WHISPER       = L and L['CHAT_MSG_MONSTER_WHISPER'] or 'Whisper',
+	CHAT_MSG_MONSTER_EMOTE         = L and L['CHAT_MSG_MONSTER_EMOTE'] or 'Emote',
+	CHAT_MSG_MONSTER_PARTY         = L and L['CHAT_MSG_MONSTER_PARTY'] or 'Party',
+	CHAT_MSG_RAID_BOSS_EMOTE       = L and L['CHAT_MSG_RAID_BOSS_EMOTE'] or 'BossEmote',
+	CHAT_MSG_RAID_BOSS_WHISPER     = L and L['CHAT_MSG_RAID_BOSS_WHISPER'] or 'BossWhisper',
 }
 
 Mumble.eventTag = eventTag

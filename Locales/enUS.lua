@@ -24,21 +24,21 @@ L['cancel_button'] = 'Cancel'
 L['no_gui'] = 'GUI module not loaded.'
 L['usage'] = 'Usage — /mumble (open GUI), /mumble reset'
 L['group_suffix'] = ' (group)'
-L['say'] = 'Say'
-L['yell'] = 'Yell'
-L['whisper'] = 'Whisper'
-L['emote'] = 'Emote'
-L['party'] = 'Party'
-L['boss_emote'] = 'BossEmote'
-L['boss_whisper'] = 'BossWhisper'
+L['CHAT_MSG_MONSTER_SAY'] = 'Say'
+L['CHAT_MSG_MONSTER_YELL'] = 'Yell'
+L['CHAT_MSG_MONSTER_WHISPER'] = 'Whisper'
+L['CHAT_MSG_MONSTER_EMOTE'] = 'Emote'
+L['CHAT_MSG_MONSTER_PARTY'] = 'Party'
+L['CHAT_MSG_RAID_BOSS_EMOTE'] = 'BossEmote'
+L['CHAT_MSG_RAID_BOSS_WHISPER'] = 'BossWhisper'
 L['divider'] = '------------------- %s -------------------'
 
--- Event tag map: key=event name, value=localized tag
+-- Cross-locale tag registry (unconditional)
 MUMBLE_CHAT_TAGS = MUMBLE_CHAT_TAGS or {}
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_SAY'] = 'Say'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_YELL'] = 'Yell'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_WHISPER'] = 'Whisper'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_EMOTE'] = 'Emote'
-MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_PARTY'] = 'Party'
-MUMBLE_CHAT_TAGS['CHAT_MSG_RAID_BOSS_EMOTE'] = 'BossEmote'
-MUMBLE_CHAT_TAGS['CHAT_MSG_RAID_BOSS_WHISPER'] = 'BossWhisper'
+MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_SAY'] = L['CHAT_MSG_MONSTER_SAY']
+MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_YELL'] = L['CHAT_MSG_MONSTER_YELL']
+MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_WHISPER'] = L['CHAT_MSG_MONSTER_WHISPER']
+MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_EMOTE'] = L['CHAT_MSG_MONSTER_EMOTE']
+MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_PARTY'] = L['CHAT_MSG_MONSTER_PARTY']
+MUMBLE_CHAT_TAGS['CHAT_MSG_RAID_BOSS_EMOTE'] = L['CHAT_MSG_RAID_BOSS_EMOTE']
+MUMBLE_CHAT_TAGS['CHAT_MSG_RAID_BOSS_WHISPER'] = L['CHAT_MSG_RAID_BOSS_WHISPER']

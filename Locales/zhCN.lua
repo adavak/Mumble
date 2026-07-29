@@ -2,7 +2,6 @@
     zhCN.lua — Simplified Chinese locale
 ]]
 
--- GUI strings (only apply in zhCN)
 if GetLocale() == 'zhCN' then
 	local L = {}
 	MUMBLE_LOCALE = L
@@ -26,17 +25,17 @@ if GetLocale() == 'zhCN' then
 	L['no_gui'] = 'GUI 模块未加载。'
 	L['usage'] = '用法 — /mumble（打开界面）, /mumble reset'
 	L['group_suffix'] = ' (组)'
-	L['say'] = '说'
-	L['yell'] = '大喊'
-	L['whisper'] = '密语'
-	L['emote'] = '表情'
-	L['party'] = '队伍'
-	L['boss_emote'] = '首领表情'
-	L['boss_whisper'] = '首领密语'
+	L['CHAT_MSG_MONSTER_SAY'] = '说'
+	L['CHAT_MSG_MONSTER_YELL'] = '大喊'
+	L['CHAT_MSG_MONSTER_WHISPER'] = '密语'
+	L['CHAT_MSG_MONSTER_EMOTE'] = '表情'
+	L['CHAT_MSG_MONSTER_PARTY'] = '队伍'
+	L['CHAT_MSG_RAID_BOSS_EMOTE'] = '首领表情'
+	L['CHAT_MSG_RAID_BOSS_WHISPER'] = '首领密语'
 	L['divider'] = '------------------- %s -------------------'
 end
 
--- Event tag map: key=event name, value=localized tag
+-- Cross-locale tag registry (unconditional)
 MUMBLE_CHAT_TAGS = MUMBLE_CHAT_TAGS or {}
 MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_SAY'] = '说'
 MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_YELL'] = '大喊'
