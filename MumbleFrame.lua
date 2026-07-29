@@ -36,8 +36,18 @@ end
 
 -- Chat color from game settings (ChatTypeInfo)
 
--- Read chat colors from ChatTypeInfo (indexed by type name)
--- e.g. ChatTypeInfo["MONSTER_SAY"].r/g/b
+-- Chat colors: try ChatTypeInfo first, fall back to defaults
+
+local defaultColors = {
+    CHAT_MSG_MONSTER_SAY = "FFFF9F",
+    CHAT_MSG_MONSTER_YELL = "FF4040",
+    CHAT_MSG_MONSTER_WHISPER = "FFB5EB",
+    CHAT_MSG_MONSTER_EMOTE = "FF8040",
+    CHAT_MSG_MONSTER_PARTY = "AAAFFF",
+    CHAT_MSG_RAID_BOSS_EMOTE = "FFDD00",
+    CHAT_MSG_RAID_BOSS_WHISPER = "FFDD00",
+}
+
 local tagColors = {}
 if Mumble.eventTag then
     for event, tag in pairs(Mumble.eventTag) do
@@ -45,6 +55,8 @@ if Mumble.eventTag then
         local info = ChatTypeInfo and ChatTypeInfo[name]
         if info then
             tagColors[tag] = string.format("%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255)
+        else
+            tagColors[tag] = defaultColors[event] or "FFFFFF"
         end
     end
 end
