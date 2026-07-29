@@ -220,7 +220,16 @@ end
 
 -- ── Event tag localization ───────────────────────────────────────────────────
 
-local eventTag = MUMBLE_LOCALE or {}
+local L = MUMBLE_LOCALE
+local eventTag = {
+	CHAT_MSG_MONSTER_SAY           = L and L['say'] or 'Say',
+	CHAT_MSG_MONSTER_YELL          = L and L['yell'] or 'Yell',
+	CHAT_MSG_MONSTER_WHISPER       = L and L['whisper'] or 'Whisper',
+	CHAT_MSG_MONSTER_EMOTE         = L and L['emote'] or 'Emote',
+	CHAT_MSG_MONSTER_PARTY         = L and L['party'] or 'Party',
+	CHAT_MSG_RAID_BOSS_EMOTE       = L and L['boss_emote'] or 'BossEmote',
+	CHAT_MSG_RAID_BOSS_WHISPER     = L and L['boss_whisper'] or 'BossWhisper',
+}
 
 local function FormatDisplay(t, who, event, msg)
 	local tag = eventTag[event] or event

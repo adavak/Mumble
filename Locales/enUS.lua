@@ -3,6 +3,7 @@
 ]]
 
 local L = {}
+MUMBLE_LOCALE = L
 L['title'] = 'Mumble Transcripts'
 L['zone_label'] = 'Zone:'
 L['npc_label'] = 'NPC:'
@@ -23,13 +24,11 @@ L['cancel_button'] = 'Cancel'
 L['no_gui'] = 'GUI module not loaded.'
 L['usage'] = 'Usage — /mumble (open GUI), /mumble reset'
 L['group_suffix'] = ' (group)'
+L['say'] = 'Say'
+L['yell'] = 'Yell'
+L['whisper'] = 'Whisper'
+L['emote'] = 'Emote'
+L['party'] = 'Party'
+L['boss_emote'] = 'BossEmote'
+L['boss_whisper'] = 'BossWhisper'
 L['divider'] = '------------------- %s -------------------'
-L['CHAT_MSG_MONSTER_SAY'] = 'Say'
-L['CHAT_MSG_MONSTER_YELL'] = 'Yell'
-L['CHAT_MSG_MONSTER_WHISPER'] = 'Whisper'
-L['CHAT_MSG_MONSTER_EMOTE'] = 'Emote'
-L['CHAT_MSG_MONSTER_PARTY'] = 'Party'
-L['CHAT_MSG_RAID_BOSS_EMOTE'] = 'BossEmote'
-L['CHAT_MSG_RAID_BOSS_WHISPER'] = 'BossWhisper'
-
-MUMBLE_LOCALE = L

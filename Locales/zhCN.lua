@@ -4,6 +4,7 @@
 
 if GetLocale() == 'zhCN' then
 	local L = {}
+	MUMBLE_LOCALE = L
 	L['title'] = 'Mumble 转录记录'
 	L['zone_label'] = '区域：'
 	L['npc_label'] = 'NPC：'
@@ -24,13 +25,12 @@ if GetLocale() == 'zhCN' then
 	L['no_gui'] = 'GUI 模块未加载。'
 	L['usage'] = '用法 — /mumble（打开界面）, /mumble reset'
 	L['group_suffix'] = ' (组)'
+	L['say'] = '说'
+	L['yell'] = '大喊'
+	L['whisper'] = '密语'
+	L['emote'] = '表情'
+	L['party'] = '队伍'
+	L['boss_emote'] = '首领表情'
+	L['boss_whisper'] = '首领密语'
 	L['divider'] = '------------------- %s -------------------'
-	L['CHAT_MSG_MONSTER_SAY'] = '说'
-	L['CHAT_MSG_MONSTER_YELL'] = '大喊'
-	L['CHAT_MSG_MONSTER_WHISPER'] = '密语'
-	L['CHAT_MSG_MONSTER_EMOTE'] = '表情'
-	L['CHAT_MSG_MONSTER_PARTY'] = '队伍'
-	L['CHAT_MSG_RAID_BOSS_EMOTE'] = '首领表情'
-	L['CHAT_MSG_RAID_BOSS_WHISPER'] = '首领密语'
-	MUMBLE_LOCALE = L
 end
