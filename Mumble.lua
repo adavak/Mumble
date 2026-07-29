@@ -231,6 +231,8 @@ local eventTag = {
 	CHAT_MSG_RAID_BOSS_WHISPER     = L and L['boss_whisper'] or 'BossWhisper',
 }
 
+Mumble.eventTag = eventTag
+
 local function FormatDisplay(t, who, event, msg)
 	local tag = eventTag[event] or event
 	return "[" .. t .. "][" .. who .. "][" .. tag .. "]：" .. msg
