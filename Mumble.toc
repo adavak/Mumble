@@ -7,6 +7,4 @@
 ## SavedVariables: CHAT_MSG_LOG_DB
 ## Dependencies: Ace3
 
-Mumble.lua
-locale/locale.lua
-MumbleFrame.lua
+Mumble.xml
