@@ -299,8 +299,9 @@ function Mumble.OpenGUI()
     zoneLabel:SetText(L['zone_label'])
 
     local function UpdateClearBtn()
-        if clearBtn then
-            clearBtn:SetText(MumbleFrame.selectedNPC and L['clear_npc'] or L['clear_current'])
+        local btn = MumbleFrame and MumbleFrame._clearBtn
+        if btn then
+            btn:SetText(MumbleFrame.selectedNPC and L['clear_npc'] or L['clear_current'])
         end
     end
 
@@ -418,9 +419,10 @@ function Mumble.OpenGUI()
     end)
 
     local clearBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    clearBtn:SetSize(90, 24)
+    clearBtn:SetSize(140, 24)
     clearBtn:SetPoint("BOTTOMLEFT", copyBtn, "BOTTOMRIGHT", 6, 0)
-    clearBtn:SetText(L['clear_current'])
+    frame._clearBtn = clearBtn
+    UpdateClearBtn()
     clearBtn:SetScript("OnClick", function()
         local zk = MumbleFrame.selectedZoneKey
         local npc = MumbleFrame.selectedNPC
@@ -462,6 +464,7 @@ function Mumble.OpenGUI()
                     -- Also remove NPC entry
                     zd[npc] = nil
                 end
+                RefreshNPCDropdown()
                 RefreshTimeline()
                 print(isZone and L['clear_done']:format(zk) or L['clear_npc_done']:format(npc))
             end,
@@ -485,5 +488,4 @@ function Mumble.OpenGUI()
         local dd = frame.zoneDD
         if dd then OnZoneChanged(dd:GetValue()) end
     end
-    UpdateClearBtn()
 end
