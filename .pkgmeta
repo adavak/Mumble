@@ -1,6 +1,12 @@
 package-as: Mumble
 
 externals:
+  Libs/LibStub:
+    url: https://repos.curseforge.com/wow/ace3/trunk/LibStub
+    tag: latest
+  Libs/CallbackHandler-1.0:
+    url: https://repos.curseforge.com/wow/ace3/trunk/CallbackHandler-1.0
+    tag: latest
   Libs/AceGUI-3.0:
     url: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
     tag: latest
