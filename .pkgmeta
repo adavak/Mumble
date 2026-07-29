@@ -12,6 +12,7 @@ externals:
     tag: latest
 
 ignore:
+  - CHANGELOG.md
   - README.md
   - README.zhCN.md
   - .gitignore
