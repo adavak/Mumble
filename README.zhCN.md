@@ -2,7 +2,7 @@
 
 [EN](README.md) | [中文](README.zhCN.md)
 
-World of Warcraft NPC 对话记录插件。
+魔兽世界 NPC 对话记录插件。
 
 自动捕获怪物和首领的聊天消息，按区域整理记录。即装即用，无需配置。
 
