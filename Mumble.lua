@@ -233,6 +233,12 @@ local eventTag = {
 
 Mumble.eventTag = eventTag
 
+-- Build cross-locale tag map from current locale
+MUMBLE_CHAT_TAGS = MUMBLE_CHAT_TAGS or {}
+for event, tag in pairs(eventTag) do
+	MUMBLE_CHAT_TAGS[event] = tag
+end
+
 local function FormatDisplay(t, who, event, msg)
 	local tag = eventTag[event] or event
 	return "[" .. t .. "][" .. who .. "][" .. tag .. "]：" .. msg

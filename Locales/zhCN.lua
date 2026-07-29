@@ -35,7 +35,7 @@ if GetLocale() == 'zhCN' then
 	L['divider'] = '------------------- %s -------------------'
 end
 
--- Cross-locale tag registry (unconditional)
+-- Cross-locale entries (unconditional)
 MUMBLE_CHAT_TAGS = MUMBLE_CHAT_TAGS or {}
 MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_SAY'] = '说'
 MUMBLE_CHAT_TAGS['CHAT_MSG_MONSTER_YELL'] = '大喊'
