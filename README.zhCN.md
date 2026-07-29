@@ -19,7 +19,7 @@
 - **NPC 筛选** — 只查看单个 NPC 的台词
 - **区域分隔线** — 合并多个地图 ID 时显示分组头
 - **本地化** — 简体中文、英文
-- **CurseForge 打包** — `.pkgmeta` 支持 nolib/with-lib 双版本
+- **CurseForge 打包** — `.pkgmeta` 自动化打包配置
 
 ## 命令
 
