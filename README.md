@@ -16,7 +16,7 @@ Silently captures monster and boss chat messages and organizes transcripts by zo
 - **Timestamp toggle** — show/hide timestamps
 - **NPC filter** — view transcripts for a single NPC
 - **Zone divider** — group headers when multiple map IDs are merged
-- **Localization** — zhCN, enUS, zhTW event tags
+- **Localization** — zhCN, enUS
 - **CurseForge ready** — `.pkgmeta` with nolib/with-lib variants
 
 ## Usage
@@ -36,9 +36,8 @@ Mumble/
 ├── Mumble.toc          # AddOn manifest
 ├── .pkgmeta            # CurseForge packaging config
 ├── Locales/
-│   ├── locale.lua      # Default (English) localization
-│   ├── zhCN.lua        # Simplified Chinese
-│   └── enUS.lua        # English
+│   ├── enUS.lua        # English (default)
+│   └── zhCN.lua        # Simplified Chinese
 ```
 
 ## Dependencies
@@ -66,5 +65,5 @@ CHAT_MSG_LOG_DB[Locale][ZoneKey] = {
 }
 ```
 
-- **Locale**: game locale (e.g. `zhCN`, `enUS`)
+- **Locale**: game locale (e.g. `enUS`, `zhCN`)
 - **ZoneKey**: `MapID@MapName`
