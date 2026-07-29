@@ -34,16 +34,23 @@ local function GetZoneNPCs(zoneKey)
     return list
 end
 
--- Chat colors by localized event tag
-local tagColors = {
-    ["Say"] = "FFFF9F", ["说"] = "FFFF9F", ["說"] = "FFFF9F",
-    ["Yell"] = "FF4040", ["大喊"] = "FF4040",
-    ["Whisper"] = "FFB5EB", ["密语"] = "FFB5EB", ["密語"] = "FFB5EB",
-    ["Emote"] = "FF8040", ["表情"] = "FF8040",
-    ["Party"] = "AAAFFF", ["队伍"] = "AAAFFF", ["隊伍"] = "AAAFFF",
-    ["BossEmote"] = "FFDD00", ["首领表情"] = "FFDD00", ["首領表情"] = "FFDD00",
-    ["BossWhisper"] = "FFDD00", ["首领密语"] = "FFDD00", ["首領密語"] = "FFDD00",
+-- Chat colors by raw event name; mapped to localized tags via Mumble.eventTag
+local eventColors = {
+    CHAT_MSG_MONSTER_SAY = "FFFF9F",
+    CHAT_MSG_MONSTER_YELL = "FF4040",
+    CHAT_MSG_MONSTER_WHISPER = "FFB5EB",
+    CHAT_MSG_MONSTER_EMOTE = "FF8040",
+    CHAT_MSG_MONSTER_PARTY = "AAAFFF",
+    CHAT_MSG_RAID_BOSS_EMOTE = "FFDD00",
+    CHAT_MSG_RAID_BOSS_WHISPER = "FFDD00",
 }
+local tagColors = {}
+if Mumble.eventTag then
+    for event, tag in pairs(Mumble.eventTag) do
+        local color = eventColors[event]
+        if color then tagColors[tag] = color end
+    end
+end
 
 -- Zone name grouping
 
