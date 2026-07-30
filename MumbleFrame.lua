@@ -2,7 +2,7 @@
     MumbleFrame.lua — GUI for Mumble Transcriptor
 ]]
 
-local L = MUMBLE_LOCALE
+-- L is global, set in Mumble.lua
 local playerKey = Mumble.GetPlayerKey()
 
 -- ── Zone helpers ─────────────────────────────────────────────────────────────
@@ -34,7 +34,7 @@ local function GetZoneNPCs(zoneKey)
     return list
 end
 
--- Chat colors by raw event name; mapped from tag→event via MUMBLE_TAG_TO_EVENT
+-- Chat colors by raw event name; looked up by GetTagColor()
 local eventColors = {
     ["CHAT_MSG_MONSTER_SAY"] = "FFFF9F",
     ["CHAT_MSG_MONSTER_YELL"] = "FF4040",
@@ -46,11 +46,17 @@ local eventColors = {
 }
 
 local tagColors = {}
-if Mumble.eventTag then
-    for event, tag in pairs(Mumble.eventTag) do
-        local color = eventColors[event]
-        if color then tagColors[tag] = color end
-    end
+local tagColorsReady = false
+
+local function GetTagColor(tag)
+	if not tagColorsReady then
+		tagColorsReady = true
+		for event, color in pairs(eventColors) do
+			local t = L['CHAT_MSG_' .. event]
+			if t then tagColors[t] = color end
+		end
+	end
+	return tagColors[tag] or "FFFFFF"
 end
 
 -- Zone name grouping
@@ -136,14 +142,14 @@ local function RefreshTimeline()
                     if hideTS then
                         display = display:gsub("^%[%d+-%d+-%d+ %d+:%d+:%d+%]", "")
                         local _, _, tag = display:find("%[.-%]%[([^%]]+)")
-                        local color = tagColors[tag] or "FFFFFF"
+                        local color = GetTagColor(tag)
                         tinsert(keyLines, "|cFF" .. color .. display .. "|r")
                     else
                         local tsEnd = display:find("%]")
                         local ts = tsEnd and display:sub(1, tsEnd) or ""
                         local rest = tsEnd and display:sub(tsEnd + 1) or display
                         local _, _, tag = rest:find("%[.-%]%[([^%]]+)")
-                        local color = tagColors[tag] or "FFFFFF"
+                        local color = GetTagColor(tag)
                         tinsert(keyLines, "|cFFAAAAAA" .. ts .. "|r|cFF" .. color .. rest .. "|r")
                     end
                 end

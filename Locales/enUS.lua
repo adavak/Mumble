@@ -2,8 +2,6 @@
     enUS.lua — Default locale
 ]]
 
-local L = {}
-MUMBLE_LOCALE = L
 L['title'] = 'Mumble Transcripts'
 L['zone_label'] = 'Zone:'
 L['npc_label'] = 'NPC:'

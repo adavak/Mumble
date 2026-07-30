@@ -2,7 +2,8 @@
     Mumble — NPC/BOSS dialogue transcriptor
 ]]
 
--- ── Global namespace for shared functions ──
+-- ── Global namespace ──
+L = {}
 Mumble = Mumble or {}
 
 function Mumble.GetPlayerKey()
@@ -182,21 +183,8 @@ end
 
 -- ── Event tag localization ───────────────────────────────────────────────────
 
-local L = MUMBLE_LOCALE
-local eventTag = {
-	CHAT_MSG_MONSTER_SAY           = L and L['CHAT_MSG_MONSTER_SAY'] or 'Say',
-	CHAT_MSG_MONSTER_YELL          = L and L['CHAT_MSG_MONSTER_YELL'] or 'Yell',
-	CHAT_MSG_MONSTER_WHISPER       = L and L['CHAT_MSG_MONSTER_WHISPER'] or 'Whisper',
-	CHAT_MSG_MONSTER_EMOTE         = L and L['CHAT_MSG_MONSTER_EMOTE'] or 'Emote',
-	CHAT_MSG_MONSTER_PARTY         = L and L['CHAT_MSG_MONSTER_PARTY'] or 'Party',
-	CHAT_MSG_RAID_BOSS_EMOTE       = L and L['CHAT_MSG_RAID_BOSS_EMOTE'] or 'BossEmote',
-	CHAT_MSG_RAID_BOSS_WHISPER     = L and L['CHAT_MSG_RAID_BOSS_WHISPER'] or 'BossWhisper',
-}
-
-Mumble.eventTag = eventTag
-
 local function FormatDisplay(t, who, event, msg)
-	local tag = eventTag[event] or event
+	local tag = L['CHAT_MSG_' .. event] or event
 	return "[" .. t .. "][" .. who .. "][" .. tag .. "]：" .. msg
 end
 
@@ -214,16 +202,16 @@ SlashCmdList["MUMBLE"] = function(input)
 		if Mumble.OpenGUI then
 			Mumble.OpenGUI()
 		else
-			print(MUMBLE_LOCALE['no_gui'])
+			print(L['no_gui'])
 		end
 	elseif input == "reset" then
 		StaticPopupDialogs["MUMBLE_RESET_ALL"] = {
-			text = MUMBLE_LOCALE['reset_confirm'],
-			button1 = MUMBLE_LOCALE['confirm_button'],
-			button2 = MUMBLE_LOCALE['cancel_button'],
+			text = L['reset_confirm'],
+			button1 = L['confirm_button'],
+			button2 = L['cancel_button'],
 			OnAccept = function()
 				CHAT_MSG_LOG_DB = {}
-				print(MUMBLE_LOCALE['reset_done'])
+				print(L['reset_done'])
 			end,
 			timeout = 0,
 			hideOnEscape = true,
@@ -231,7 +219,7 @@ SlashCmdList["MUMBLE"] = function(input)
 		}
 		StaticPopup_Show("MUMBLE_RESET_ALL")
 	else
-		print(MUMBLE_LOCALE['usage'])
+		print(L['usage'])
 	end
 end
 
