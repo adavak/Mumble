@@ -19,6 +19,10 @@ function Mumble.GetConfig()
 	elseif CHAT_MSG_LOG_DB.__config.hideTimestamp == nil then
 		CHAT_MSG_LOG_DB.__config.hideTimestamp = false
 	end
+	if not CHAT_MSG_LOG_DB.__config.fontSize then
+		local _, defaultSize = ChatFontNormal:GetFont()
+		CHAT_MSG_LOG_DB.__config.fontSize = defaultSize or 12
+	end
 	return CHAT_MSG_LOG_DB.__config
 end
 
@@ -184,7 +188,7 @@ end
 -- ── Event tag localization ───────────────────────────────────────────────────
 
 local function FormatDisplay(t, who, event, msg)
-	local tag = L['CHAT_MSG_' .. event] or event
+	local tag = L[event] or event
 	return "[" .. t .. "][" .. who .. "][" .. tag .. "]：" .. msg
 end
 

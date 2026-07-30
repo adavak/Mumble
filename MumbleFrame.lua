@@ -5,6 +5,30 @@
 -- L is global, set in Mumble.lua
 local playerKey = Mumble.GetPlayerKey()
 
+-- ── Font sizing ──
+local MumbleFont = CreateFont("MumbleTextFont")
+local _, MumbleDefaultFontSize = ChatFontNormal:GetFont()
+MumbleDefaultFontSize = MumbleDefaultFontSize or 12
+
+local function ApplyFontSize(size)
+	local fontPath, _, fontFlags = ChatFontNormal:GetFont()
+	size = size or Mumble.GetConfig().fontSize or MumbleDefaultFontSize
+	MumbleFont:SetFont(fontPath, size, fontFlags)
+	if MumbleFrame and MumbleFrame.scrollText then
+		MumbleFrame.scrollText:SetFontObject(MumbleFont)
+	end
+end
+
+local function ChangeFontSize(delta)
+	local cfg = Mumble.GetConfig()
+	local newSize = math.max(8, math.min(24, (cfg.fontSize or MumbleDefaultFontSize) + delta))
+	cfg.fontSize = newSize
+	ApplyFontSize(newSize)
+	if MumbleFrame and MumbleFrame._fontLabel then
+		MumbleFrame._fontLabel:SetText(newSize)
+	end
+end
+
 -- ── Zone helpers ─────────────────────────────────────────────────────────────
 
 local function GetZoneKeys()
@@ -52,7 +76,7 @@ local function GetTagColor(tag)
 	if not tagColorsReady then
 		tagColorsReady = true
 		for event, color in pairs(eventColors) do
-			local t = L['CHAT_MSG_' .. event]
+			local t = L[event]
 			if t then tagColors[t] = color end
 		end
 	end
@@ -358,6 +382,24 @@ function Mumble.OpenGUI()
     end)
     frame.npcDD = npcDD
 
+    -- Font size controls
+    local fontLarger = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    fontLarger:SetSize(24, 22)
+    fontLarger:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -22, -44)
+    fontLarger:SetText('+')
+    fontLarger:SetScript("OnClick", function() ChangeFontSize(1) end)
+
+    local fontLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    fontLabel:SetPoint("RIGHT", fontLarger, "LEFT", -6, 0)
+    fontLabel:SetText(Mumble.GetConfig().fontSize or MumbleDefaultFontSize)
+    frame._fontLabel = fontLabel
+
+    local fontSmaller = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    fontSmaller:SetSize(24, 22)
+    fontSmaller:SetPoint("RIGHT", fontLabel, "LEFT", -6, 0)
+    fontSmaller:SetText('-')
+    fontSmaller:SetScript("OnClick", function() ChangeFontSize(-1) end)
+
     -- Text display area
     local textBg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
     textBg:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -90)
@@ -381,12 +423,13 @@ function Mumble.OpenGUI()
     scrollText:SetMaxLetters(0)
     scrollText:EnableMouse(true)
     scrollText:SetAutoFocus(false)
-    scrollText:SetFontObject(ChatFontNormal)
+    scrollText:SetFontObject(MumbleFont)
     scrollText:SetTextColor(0.9, 0.9, 0.9)
     scrollText:SetWidth(800)
     scrollText:SetHeight(200)
     textScroll:SetScrollChild(scrollText)
     frame.scrollText = scrollText
+    ApplyFontSize()
 
     local resizeOnce
     resizeOnce = frame:SetScript("OnUpdate", function()

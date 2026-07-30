@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.5 (2026-07-30)
+
+- Font size controls (+/- buttons on top bar, persistent)
+- Fixed tag color lookup (double CHAT_MSG_ prefix bug)
+
 ## v2.0.3 (2026-07-30)
 
 - Fixed .pkgmeta changelog config (removed invalid key)
